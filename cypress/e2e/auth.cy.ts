@@ -50,4 +50,13 @@ describe("Auth Flow", () => {
     cy.contains("Login").should("be.visible");
     cy.contains("Sign Up").should("be.visible");
   });
+
+  it("redirects between login and signup pages", () => {
+    cy.contains("Login").click();
+    cy.contains("Sign up").click();
+    cy.url().should("include", "/signup");
+
+    cy.contains("Log in").click();
+    cy.url().should("include", "/login");
+  });
 });
