@@ -27,4 +27,15 @@ describe("Auth Flow", () => {
     cy.contains("Login").should("not.exist");
     cy.contains("Sign Up").should("not.exist");
   });
+
+  it("signs up and shows logged-in state", () => {
+    cy.contains("Sign Up").click();
+    cy.get('[data-testid="signup-username"]').type("newuser");
+    cy.get('[data-testid="signup-email"]').type("new@example.com");
+    cy.get('[data-testid="signup-password"]').type("secret123");
+    cy.get('[data-testid="signup-submit"]').click();
+
+    cy.url().should("eq", Cypress.config().baseUrl + "/");
+    cy.contains("Welcome, newuser").should("be.visible");
+  });
 });
