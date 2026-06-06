@@ -38,4 +38,16 @@ describe("Auth Flow", () => {
     cy.url().should("eq", Cypress.config().baseUrl + "/");
     cy.contains("Welcome, newuser").should("be.visible");
   });
+
+  it("logs out and resets state", () => {
+    cy.contains("Login").click();
+    cy.get('[data-testid="login-username"]').type("testuser");
+    cy.get('[data-testid="login-password"]').type("password123");
+    cy.get('[data-testid="login-submit"]').click();
+
+    cy.contains("Logout").click();
+    cy.url().should("include", "/login");
+    cy.contains("Login").should("be.visible");
+    cy.contains("Sign Up").should("be.visible");
+  });
 });
