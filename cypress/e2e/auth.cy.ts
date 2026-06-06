@@ -39,6 +39,26 @@ describe("Auth Flow", () => {
     cy.contains("Welcome, newuser").should("be.visible");
   });
 
+  it("logs in and fetches posts from JSONPlaceholder", () => {
+    cy.intercept("GET", "https://jsonplaceholder.typicode.com/posts*", {
+      body: [
+        { userId: 1, id: 1, title: "Test Post 1", body: "Body of test post 1" },
+        { userId: 1, id: 2, title: "Test Post 2", body: "Body of test post 2" },
+      ],
+    }).as("getPosts");
+
+    cy.contains("Login").click();
+    cy.get('[data-testid="login-username"]').type("testuser");
+    cy.get('[data-testid="login-password"]').type("password123");
+    cy.get('[data-testid="login-submit"]').click();
+
+    cy.wait("@getPosts");
+    cy.get('[data-testid="posts-list"]').should("be.visible");
+    cy.get('[data-testid="post-item"]').should("have.length", 2);
+    cy.contains("Test Post 1").should("be.visible");
+    cy.contains("Test Post 2").should("be.visible");
+  });
+
   it("logs out and resets state", () => {
     cy.contains("Login").click();
     cy.get('[data-testid="login-username"]').type("testuser");
